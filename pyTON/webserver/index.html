@@ -1,0 +1,238 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>TON API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="R9qIN6Pmk0stHXXnxa5Z1Yi5Ux78UkHEIKLn/kd8Ju4845Syg625KARnL3jtt02L1vvLQEu4F/vB9/F/51kxGQ==" />
+    
+
+    <link rel="stylesheet" media="all" href="application.css" data-turbolinks-track="reload" />
+    <script src="application.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
+      <a class="navbar-brand" href="/">TON API</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/api">API</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main role="main" class="container">
+    <h1>TON API</h1>
+<h2>Making requests</h2>
+<p class="text-monospace">localhost:8000/getAddressInformation?address=0QCyt4ltzak71h6XkyK4ePfZCzJQDSVUNuvZ3VE7hP_Q-GTE</p>
+<p>Default query type is GET if otherwise was not specified</p>
+<p>The response contains a JSON object, which always has a boolean field 'ok' and may have an optional string field 'description' with a human-readable description of the result. If 'ok' equals true, the request was successful and the result of the query can be found in the 'result' field. In case of an unsuccessful request, 'ok' equals false and the error is explained in the 'description'.</p>
+
+<h2>getAddressInformation</h2>
+<p>Use this method to get balance (in nanograms) and state of a given address.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON</td>
+    </tr>
+  </tbody>
+</table>
+<h2>getTransactions</h2>
+<p>Use this method to get transaction history of a given address. Along with 'result', API may return 'previous_transaction' with 'lt' and 'hash' fields, if there are more transactions to see. Use them to get more transactions.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Required</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+	  <td>Yes</td>
+      <td>Identifier of target account in TON</td>
+    </tr>
+    <tr>
+      <td>limit</td>
+	  <td>Optional</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>lt</td>
+	  <td>Optional</td>
+      <td>Logical time of transaction to start with, must be sent with hash</td>
+    </tr>
+    <tr>
+      <td>hash</td>
+	  <td>Optional</td>
+      <td>Hash of transaction to start with, must be sent with lt</td>
+    </tr>
+    <tr>
+      <td>to_lt</td>
+	  <td>Optional</td>
+      <td>Logical time of transaction to finish with (that way it is possible to get tx from lt to to_lt)</td>
+    </tr>
+  </tbody>
+</table>
+<h2>getAddressBalance</h2>
+<p>Use this method to get balance (in nanograms) of a given address.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON</td>
+    </tr>
+  </tbody>
+</table>
+<h2>getAddressState</h2>
+<p>Use this method to get state of a given address. State can be either "unitialized", "active" or "frozen".</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON</td>
+    </tr>
+  </tbody>
+</table>
+<h2>unpackAddress</h2>
+<p>Use this method to convert an address from human-readable to raw format.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON in human-readable format</td>
+    </tr>
+  </tbody>
+</table>
+<h2>packAddress</h2>
+<p>Use this method to convert an address from raw to human-readable format.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON in raw format</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>detectAddress</h2>
+<p>Use this method to get all possible address forms</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON in raw format</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>sendboc</h2>
+<p><strong>POST method</strong></p>
+<p>Use this method to send serialized boc file</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>boc</td>
+      <td>b64 encoded bag of cells</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>sendcell</h2>
+<p><strong>POST method</strong></p>
+<p>Use this method to send cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cell</td>
+      <td>Cell serialized as object</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h2>runGetMethod</h2>
+<p><strong>POST method</strong></p>
+<p>Use this method run getMethod</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>contract address</td>
+    </tr>
+    <tr>
+      <td>method</td>
+      <td>method name or method id</td>
+    </tr>
+    <tr>
+      <td>stack</td>
+      <td>Array of stack elements: <code>[['num',3], ['cell', cell_object], ['slice', slice_object]]</code></td>
+    </tr>
+  </tbody>
+</table>
+    </main>
+  </body>
+</html>
+

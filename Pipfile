@@ -1,0 +1,28 @@
+[[source]]
+name = "pyTON"
+url = "https://github.com/viewst/pyTON"
+verify_ssl = true
+
+[dev-packages]
+pipenv = ">=2018.11.26"
+flake8 = ">=3.7.8"
+wheel = ">=0.33.6"
+pytest = "*"
+v = {editable = true,version = "*"}
+
+[packages]
+ed25519 = "~=1.5"
+ujson = ">=1.35"
+uvloop = "*"
+mnemonic = "*"
+crc16 = "*"
+pycryptodome = "*"
+pynacl = "*"
+tvm_valuetypes = "*"
+aiohttp = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
