@@ -7,7 +7,7 @@ import base64, argparse, os
 
 import importlib.resources
 from tvm_valuetypes.cell import deserialize_cell_from_object
-
+import warnings, traceback
 
 def main():
     parser = argparse.ArgumentParser()
@@ -50,15 +50,20 @@ def main():
             return _detect_address(address)
         except:
             raise web.HTTPRequestRangeNotSatisfiable()
-            
+
     def wrap_result(func):
       async def wrapper(*args, **kwargs):
         try:
           return web.json_response( { "ok": True, "result": await func(*args, **kwargs) })
         except Exception as e:
-          return web.json_response( { "ok": False, "code": e.status_code,"description": str(e) })
+          try:
+            return web.json_response( { "ok": False, "code": e.status_code,"description": str(e) })
+          except:
+            warnings.warn("Unknown exception", SyntaxWarning)
+            traceback.print_exc()
+            return web.json_response( { "ok": False, "description": str(e) })
       return wrapper
-        
+
     def address_state(account_info):
       if len(account_info.get("code","")) == 0:
         if len(account_info.get("frozen_hash","")) == 0:
@@ -80,7 +85,7 @@ def main():
     @routes.get('/application.css')
     async def index_css(request):
         with importlib.resources.path('pyTON.webserver', 'application.css') as path:
-          return web.FileResponse(path)                    
+          return web.FileResponse(path)
 
 
     @routes.get('/getAddressInformation')
@@ -104,7 +109,7 @@ def main():
       to_lt = request.query.get('to_lt', 0)
       to_lt = to_lt if not to_lt else int(to_lt)
       return await tonlib.get_transactions(address, from_transaction_lt = lt, from_transaction_hash = tx_hash, to_transaction_lt = to_lt, limit = limit)
-      
+
     @routes.get('/getAddressBalance')
     @wrap_result
     async def getAddressBalance(request):
@@ -125,7 +130,7 @@ def main():
     @wrap_result
     async def packAddress(request):
       return detect_address(request.query['address'])["bounceable"]["b64"]
-      
+
     @routes.get('/unpackAddress')
     @wrap_result
     async def unpackAddress(request):
@@ -163,7 +168,7 @@ def main():
           method = data['method']
           stack = data['stack']
           return await tonlib.raw_run_method(address, method, stack)
-      
+
     app = web.Application()
     app.add_routes(routes)
     web.run_app(app, port = port)
