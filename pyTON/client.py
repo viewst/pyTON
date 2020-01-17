@@ -184,7 +184,6 @@ class TonlibClient:
       current_lt, curret_hash = from_transaction_lt, from_transaction_hash
       while (not reach_lt) and (len(all_transactions)<limit):
         raw_transactions = self._raw_get_transactions(account_address, current_lt, curret_hash)
-        print(raw_transactions, current_lt, curret_hash)
         if(raw_transactions['@type']) == 'error':
           if message in raw_transactions['message']:
             raise Exception(raw_transactions['message'])
@@ -236,6 +235,18 @@ class TonlibClient:
     @parallelize
     def raw_get_account_state(self, address: str):
       return self._raw_get_account_state(address)
+
+    @parallelize
+    def generic_get_account_state(self, address: str):
+        account_address = detect_address(address)["bounceable"]["b64"]
+        data = {
+            '@type': 'generic.getAccountState',
+            'account_address': {
+                'account_address': address
+            }
+        }
+        r = self._t_local.tonlib_wrapper.ton_exec(data)
+        return r
 
     def _load_contract(self, address):
         if(self._t_local.loaded_contracts_num > 300):
@@ -335,7 +346,6 @@ class TonlibClient:
         }
       }
       r = self._t_local.tonlib_wrapper.ton_exec(data)
-      print(r)
       return r
     
     def _raw_send_query(self, query_info): 
@@ -377,3 +387,13 @@ class TonlibClient:
       return r
       #return ('@type' in r) and (r['@type']=="Ok")
 
+    @parallelize
+    def raw_estimate_fees(self, destination, body, init_code=b'', init_data=b'', ignore_chksig=True):
+      query_info = self._raw_create_query(destination, body, init_code, init_data)
+      data = {
+        '@type': 'query.estimateFees',
+        'id': query_info['id'],
+        'ignore_chksig': ignore_chksig
+      }
+      r = self._t_local.tonlib_wrapper.ton_exec(data)
+      return r
