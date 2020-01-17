@@ -35,7 +35,39 @@
 <p>The response contains a JSON object, which always has a boolean field 'ok' and may have an optional string field 'description' with a human-readable description of the result. If 'ok' equals true, the request was successful and the result of the query can be found in the 'result' field. In case of an unsuccessful request, 'ok' equals false and the error is explained in the 'description'.</p>
 
 <h2>getAddressInformation</h2>
-<p>Use this method to get balance (in nanograms) and state of a given address.</p>
+<p>Use this method to get information about address: balance, code, data, last_transaction_id.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON</td>
+    </tr>
+  </tbody>
+</table>
+<h2>getExtendedAddressInformation</h2>
+<p> Similar to previous one but tries to parse additional information for known contract types. This method is based on generic.getAccountState thus number of recognizable contracts may grow. For wallets we recommend to use getWalletInformation.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Identifier of target account in TON</td>
+    </tr>
+  </tbody>
+</table>
+<h2>getWalletInformation</h2>
+<p> Use this method to retrieve wallet information, this method parse contract state and currently supports more wallet types than getExtendedAddressInformation: simple wallet, stadart wallet and v3 wallet.</p>
 <table class="table table-sm">
   <thead>
     <tr>

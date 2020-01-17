@@ -1,6 +1,6 @@
 from .client import TonlibClient
 from .address_utils import detect_address as _detect_address
-
+from .wallet_utils import wallets as known_wallets, sha256
 
 from aiohttp import web
 import base64, argparse, os
@@ -97,6 +97,31 @@ def main():
       if "balance" in result and int(result["balance"])<0:
         result["balance"] = 0
       return result
+
+    @routes.get('/getExtendedAddressInformation')
+    @wrap_result
+    async def getExtendedAddressInformation(request):
+      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      result = await tonlib.generic_get_account_state(address)
+      return result
+
+    @routes.get('/getWalletInformation')
+    @wrap_result
+    async def getWalletInformation(request):
+      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      result = await tonlib.raw_get_account_state(address)
+      res = {'wallet':False, 'balance': 0, 'account_state':None, 'wallet_type':None, 'seqno':None}
+      res["account_state"] = address_state(result)
+      res["balance"] = result["balance"] if (result["balance"] and int(result["balance"])>0) else 0
+      if "last_transaction_id" in result:
+        res["last_transaction_id"] = result["last_transaction_id"]
+      ci = sha256(result["code"])
+      if ci in known_wallets:
+        res["wallet"] = True
+        wallet_handler = known_wallets[ci]
+        res["wallet_type"] = wallet_handler["type"]
+        wallet_handler["data_extractor"](res, result)
+      return res
 
     @routes.get('/getTransactions')
     @wrap_result
