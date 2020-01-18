@@ -248,6 +248,13 @@ def main():
 
     app = web.Application()
     app.add_routes(routes)
+    def cors_handler(*args, **kwargs):
+      cors_origin_header = ("Access-Control-Allow-Origin", "*")
+      cors_headers_header = ("Access-Control-Allow-Headers", "*")
+      return web.Response(headers=[cors_origin_header, cors_headers_header])
+    for route in list(routes):
+      if not isinstance(route, web.StaticDef):
+        app.router.add_route(method="OPTIONS", path=route.path, handler=cors_handler)
     web.run_app(app, port = port)
 
 
