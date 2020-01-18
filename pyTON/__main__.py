@@ -166,16 +166,16 @@ def main():
     async def detectAddress(request):
       return detect_address(request.query['address'])
 
-    @routes.post('/sendboc')
+    @routes.post('/sendBoc')
     @wrap_result
-    async def sendboc(request):
+    async def send_boc(request):
       data = await request.json()
       boc = base64.b64decode(data['boc'])
       return await tonlib.raw_send_message(boc)
 
-    @routes.post('/sendcell')
+    @routes.post('/sendCell')
     @wrap_result
-    async def sendcell(request):
+    async def send_cell(request):
       data = await request.json()
       try:
         cell = deserialize_cell_from_object(data['cell'])
@@ -184,9 +184,9 @@ def main():
         raise web.HTTPBadRequest("Wrong cell object")
       return await tonlib.raw_send_message(boc)
 
-    @routes.post('/sendquery')
+    @routes.post('/sendQuery')
     @wrap_result
-    async def sendquery(request):
+    async def send_query(request):
       data = await request.json()
       address = detect_address(request.query['address'])["bounceable"]["b64"]
       body = codecs.decode(codecs.encode(request.query['body'], "utf-8"), 'base64').replace("\n",'') 
@@ -194,9 +194,9 @@ def main():
       data = codecs.decode(codecs.encode(request.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
       return await tonlib.raw_create_and_send_query(address, body, init_code=code, init_data=data)
 
-    @routes.post('/sendquerycell')
+    @routes.post('/sendQueryCell')
     @wrap_result
-    async def sendquery(request):
+    async def send_query_cell(request):
       data = await request.json()
       address = detect_address(request.query['address'])["bounceable"]["b64"]
       try:
@@ -212,7 +212,7 @@ def main():
 
     @routes.post('/estimateFee')
     @wrap_result
-    async def sendquery(request):
+    async def estimate_fee(request):
       data = await request.json()
       address = detect_address(request.query['address'])["bounceable"]["b64"]
       body = codecs.decode(codecs.encode(request.query['body'], "utf-8"), 'base64').replace("\n",'') 
@@ -222,7 +222,7 @@ def main():
 
     @routes.post('/estimateFeeCell')
     @wrap_result
-    async def sendquery(request):
+    async def estimate_fee_cell(request):
       data = await request.json()
       address = detect_address(request.query['address'])["bounceable"]["b64"]
       try:
