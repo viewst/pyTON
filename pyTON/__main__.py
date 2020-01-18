@@ -184,6 +184,58 @@ def main():
         raise web.HTTPBadRequest("Wrong cell object")
       return await tonlib.raw_send_message(boc)
 
+    @routes.post('/sendquery')
+    @wrap_result
+    async def sendquery(request):
+      data = await request.json()
+      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      body = codecs.decode(codecs.encode(request.query['body'], "utf-8"), 'base64').replace("\n",'') 
+      code = codecs.decode(codecs.encode(request.query.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
+      data = codecs.decode(codecs.encode(request.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
+      return await tonlib.raw_create_and_send_query(address, body, init_code=code, init_data=data)
+
+    @routes.post('/sendquerycell')
+    @wrap_result
+    async def sendquery(request):
+      data = await request.json()
+      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      try:
+        body = serialize_boc(deserialize_cell_from_object(data['body']))
+        code, data = b'', b''
+        if 'init_code' in data:
+          code = serialize_boc(deserialize_cell_from_object(data['init_code']))
+        if 'init_data' in data:
+          data = serialize_boc(deserialize_cell_from_object(data['init_data']))
+      except:
+        raise web.HTTPBadRequest("Can't serialize cell object")
+      return await tonlib.raw_create_and_send_query(address, body, init_code=code, init_data=data)
+
+    @routes.post('/estimateFee')
+    @wrap_result
+    async def sendquery(request):
+      data = await request.json()
+      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      body = codecs.decode(codecs.encode(request.query['body'], "utf-8"), 'base64').replace("\n",'') 
+      code = codecs.decode(codecs.encode(request.query.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
+      data = codecs.decode(codecs.encode(request.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
+      return await tonlib.raw_estimate_fees(address, body, init_code=code, init_data=data)
+
+    @routes.post('/estimateFeeCell')
+    @wrap_result
+    async def sendquery(request):
+      data = await request.json()
+      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      try:
+        body = serialize_boc(deserialize_cell_from_object(data['body']))
+        code, data = b'', b''
+        if 'init_code' in data:
+          code = serialize_boc(deserialize_cell_from_object(data['init_code']))
+        if 'init_data' in data:
+          data = serialize_boc(deserialize_cell_from_object(data['init_data']))
+      except:
+        raise web.HTTPBadRequest("Can't serialize cell object")
+      return await tonlib.raw_estimate_fees(address, body, init_code=code, init_data=data)
+
     if args.getmethods:
         @routes.post('/runGetMethod')
         @wrap_result
