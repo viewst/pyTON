@@ -61,7 +61,6 @@ def main():
           return web.json_response( { "ok": True, "result": await func(*args, **kwargs) }, headers=headers)
         except Exception as e:
           try:
-            traceback.print_exc()
             return web.json_response( { "ok": False, "code": e.status_code,"error": str(e) }, headers=headers)
           except:
             warnings.warn("Unknown exception", SyntaxWarning)
@@ -73,9 +72,14 @@ def main():
 
     def json_rpc(method, style='post'):
       def g(func):
-        json_rpc_methods[method] = (func, style)
-        async def f(*args, **kwargs):
-          return await func(*args, **kwargs)
+        async def f(pseudo_request):
+          response = await func(pseudo_request)
+          if pseudo_request._id:
+            data = json.loads(response.text)
+            data.update({'id':pseudo_request._id})
+            response.text = json.dumps(data)
+          return response
+        json_rpc_methods[method] = (f, style)
         return f
       return g
 
@@ -282,18 +286,19 @@ def main():
           data = await request.json()
           params = data['params']
           method = data['method']
+          _id = data.get('id', None)
           if not method in json_rpc_methods:
             return web.json_response( { "ok": False, "error": 'Unknown method'})
           handler, style = json_rpc_methods[method]
           class PseudoRequest:
-            def __init__(self,query={}, json={}):
-              self.query,self._json = query, json
+            def __init__(self,query={}, json={}, id=None):
+              self.query, self._json, self._id = query, json, id
             async def json(self):
               return self._json
           if style == 'get':
-             return await handler(PseudoRequest(query=params))
+             return await handler(PseudoRequest(query=params, id=_id))
           else:
-             return await handler(PseudoRequest(json=params))
+             return await handler(PseudoRequest(json=params, id=_id))
 
     app = web.Application()
     app.add_routes(routes)
