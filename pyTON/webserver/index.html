@@ -19,22 +19,29 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="/api">API</a>
-          </li>
-        </ul>
-      </div>
     </nav>
     <main role="main" class="container">
     <h1>TON API</h1>
 <h2>Making requests</h2>
-<p class="text-monospace">localhost:8000/getAddressInformation?address=0QCyt4ltzak71h6XkyK4ePfZCzJQDSVUNuvZ3VE7hP_Q-GTE</p>
-<p>Default query type is GET if otherwise was not specified</p>
-<p>The response contains a JSON object, which always has a boolean field 'ok' and may have an optional string field 'description' with a human-readable description of the result. If 'ok' equals true, the request was successful and the result of the query can be found in the 'result' field. In case of an unsuccessful request, 'ok' equals false and the error is explained in the 'description'.</p>
 
-<h2>getAddressInformation</h2>
+<p>Default query type is GET if otherwise was not specified. POST query should pass arguments as json objects.</p>
+<p>The response contains a JSON object, which always has a boolean field 'ok' and may have an optional string field 'description' with a human-readable description of the result. If 'ok' equals true, the request was successful and the result of the query can be found in the 'result' field. In case of an unsuccessful request, 'ok' equals false and the error is explained in the 'description'.</p>
+<p>All methods are available through jsonrpc endpoint <span class="server-address">localhost:8000</span>/jsonRPC with `method` equal to method name and params passed as dictionary.</p>
+<h2> Examples </h2>
+<p><strong>GET-request</strong></p>
+<p class="text-monospace"><span class="server-address">localhost:8000</span>/getAddressInformation?address=0QCyt4ltzak71h6XkyK4ePfZCzJQDSVUNuvZ3VE7hP_Q-GTE</p>
+<p><strong>POST-request</strong></p>
+<code>
+curl '<span class="server-address"></span>/estimateFeeCell' -H 'content-type: application/json' -d '{"address":"UQBPNn30w7DMPQmcJLPDltSSqu28MzHeV6_CvhjQdDDF64XH","body":{"data":{"b64":"+wnCxYB9Rfe4ooUtCq9hzpjqgSLHM4mdQR2YxENI4FHFAJ2wmz944/DOI/bc/YA2eFBPfmRK8rZnh3unf+1DBQAAAAkDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":552},"refs":[{"data":{"b64":"YgBrvXT8H560LJTGPY0wmQSJB2Lr7IzIIhfS155VEZaobJgknwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":408},"refs":[]}]}}'
+</code>
+<p><strong>JsonRPC-request</strong></p>
+<code>
+curl '<span class="server-address"></span>/jsonRPC' -H 'content-type: application/json' -d '{"id":1,"jsonrpc":"2.0","method":"estimateFeeCell","params":{"address":"UQBPNn30w7DMPQmcJLPDltSSqu28MzHeV6_CvhjQdDDF64XH","body":{"data":{"b64":"+wnCxYB9Rfe4ooUtCq9hzpjqgSLHM4mdQR2YxENI4FHFAJ2wmz944/DOI/bc/YA2eFBPfmRK8rZnh3unf+1DBQAAAAkDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":552},"refs":[{"data":{"b64":"YgBrvXT8H560LJTGPY0wmQSJB2Lr7IzIIhfS155VEZaobJgknwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":408},"refs":[]}]}}}'
+</code>
+<ul id="methods">
+</ul>
+
+<h3>getAddressInformation</h3>
 <p>Use this method to get information about address: balance, code, data, last_transaction_id.</p>
 <table class="table table-sm">
   <thead>
@@ -50,7 +57,7 @@
     </tr>
   </tbody>
 </table>
-<h2>getExtendedAddressInformation</h2>
+<h3>getExtendedAddressInformation</h3>
 <p> Similar to previous one but tries to parse additional information for known contract types. This method is based on generic.getAccountState thus number of recognizable contracts may grow. For wallets we recommend to use getWalletInformation.</p>
 <table class="table table-sm">
   <thead>
@@ -66,7 +73,7 @@
     </tr>
   </tbody>
 </table>
-<h2>getWalletInformation</h2>
+<h3>getWalletInformation</h3>
 <p> Use this method to retrieve wallet information, this method parse contract state and currently supports more wallet types than getExtendedAddressInformation: simple wallet, stadart wallet and v3 wallet.</p>
 <table class="table table-sm">
   <thead>
@@ -82,7 +89,7 @@
     </tr>
   </tbody>
 </table>
-<h2>getTransactions</h2>
+<h3>getTransactions</h3>
 <p>Use this method to get transaction history of a given address. Along with 'result', API may return 'previous_transaction' with 'lt' and 'hash' fields, if there are more transactions to see. Use them to get more transactions.</p>
 <table class="table table-sm">
   <thead>
@@ -120,7 +127,7 @@
     </tr>
   </tbody>
 </table>
-<h2>getAddressBalance</h2>
+<h3>getAddressBalance</h3>
 <p>Use this method to get balance (in nanograms) of a given address.</p>
 <table class="table table-sm">
   <thead>
@@ -136,7 +143,7 @@
     </tr>
   </tbody>
 </table>
-<h2>getAddressState</h2>
+<h3>getAddressState</h3>
 <p>Use this method to get state of a given address. State can be either "unitialized", "active" or "frozen".</p>
 <table class="table table-sm">
   <thead>
@@ -152,7 +159,7 @@
     </tr>
   </tbody>
 </table>
-<h2>unpackAddress</h2>
+<h3>unpackAddress</h3>
 <p>Use this method to convert an address from human-readable to raw format.</p>
 <table class="table table-sm">
   <thead>
@@ -168,7 +175,7 @@
     </tr>
   </tbody>
 </table>
-<h2>packAddress</h2>
+<h3>packAddress</h3>
 <p>Use this method to convert an address from raw to human-readable format.</p>
 <table class="table table-sm">
   <thead>
@@ -185,7 +192,7 @@
   </tbody>
 </table>
 
-<h2>detectAddress</h2>
+<h3>detectAddress</h3>
 <p>Use this method to get all possible address forms</p>
 <table class="table table-sm">
   <thead>
@@ -202,9 +209,9 @@
   </tbody>
 </table>
 
-<h2>sendBoc</h2>
+<h3>sendBoc</h3>
 <p><strong>POST method</strong></p>
-<p>Use this method to send serialized boc file</p>
+<p>Use this method to send serialized boc file: fully packed and serialized external message.</p>
 <table class="table table-sm">
   <thead>
     <tr>
@@ -220,9 +227,9 @@
   </tbody>
 </table>
 
-<h2>sendCell</h2>
+<h3>sendCell</h3>
 <p><strong>POST method</strong></p>
-<p>Use this method to send cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></p>
+<p>Use this method to send cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code>, that is fully packed but not serialized external message.</p>
 <table class="table table-sm">
   <thead>
     <tr>
@@ -238,8 +245,137 @@
   </tbody>
 </table>
 
+<h3>sendQuery</h3>
+<p><strong>POST method</strong></p>
+<p>Use this method to send query: that is unpacked external message. This method get address, body and init-params(if any), pack it to external message and send to network. All params should be boc-serialized.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Address in any format</td>
+    </tr>
+    <tr>
+      <td>body</td>
+      <td>b64-encoded boc-serialized cell with message body</td>
+    </tr>
+    <tr>
+      <td>init-code</td>
+      <td>(optional) b64-encoded boc-serialized cell with init-code</td>
+    </tr>
+    <tr>
+      <td>init-data</td>
+      <td>(optional) b64-encoded boc-serialized cell with init-data</td>
+    </tr>
+  </tbody>
+</table>
 
-<h2>runGetMethod</h2>
+<h3>sendQueryCell</h3>
+<p><strong>POST method</strong></p>
+<p>Use this method to send query: that is unpacked external message. This method get address, body and init-params(if any), pack it to external message and send to network. Body, init-code and init-data should be passed as objects.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Address in any format</td>
+    </tr>
+    <tr>
+      <td>body</td>
+      <td>Body cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></td>
+    </tr>
+    <tr>
+      <td>init-code</td>
+      <td>(optional) init-code cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></td>
+    </tr>
+    <tr>
+      <td>init-data</td>
+      <td>(optional) init-data cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>estimateFee</h3>
+<p><strong>POST method</strong></p>
+<p>Use this method to to estimate fees required for query processing.</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Address in any format</td>
+    </tr>
+    <tr>
+      <td>body</td>
+      <td>b64-encoded cell with message body</td>
+    </tr>
+    <tr>
+      <td>init-code</td>
+      <td>(optional) b64-encoded cell with init-code</td>
+    </tr>
+    <tr>
+      <td>init-data</td>
+      <td>(optional) b64-encoded cell with init-data</td>
+    </tr>
+    <tr>
+      <td>ignore_chksig</td>
+      <td>(optional, default True) Bool, if true during test query processing assume that all chksig operations return True</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h3>estimateFeeCell</h3>
+<p><strong>POST method</strong></p>
+<p>Use this method to estimate fees required for query processing (unserialized body, init-code and init-data)</p>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Parameter</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>address</td>
+      <td>Address in any format</td>
+    </tr>
+    <tr>
+      <td>body</td>
+      <td>Body cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></td>
+    </tr>
+    <tr>
+      <td>init-code</td>
+      <td>(optional) init-code cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></td>
+    </tr>
+    <tr>
+      <td>init-data</td>
+      <td>(optional) init-data cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code></td>
+    </tr>
+    <tr>
+      <td>ignore_chksig</td>
+      <td>(optional, default True) Bool, if true during test query processing assume that all chksig operations return True</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h3>runGetMethod</h3>
 <p><strong>POST method</strong></p>
 <p>Use this method run getMethod</p>
 <table class="table table-sm">
@@ -264,6 +400,24 @@
     </tr>
   </tbody>
 </table>
+    <script>
+     var address_placeholders = document.getElementsByClassName("server-address");
+     var address = "https://"+window.location.hostname;
+     if(window.location.port!=80) {
+       address += ":"+window.location.port;
+     };
+     for ( p of address_placeholders ) {
+       p.innerHTML = address;
+     };
+     var methods = document.getElementsByTagName("h3");
+     var methods_list = document.getElementById("methods");
+     for (m of methods) {
+       //m.setAttribute('id',m.innerHTML);
+       var name = m.innerHTML;
+       m.innerHTML = "<a id='"+name+"'>"+name+"</a>";
+       methods_list.innerHTML += "<li><a href='#" + name + "'>"+name+"</a>\n";
+     };
+    </script>
     </main>
   </body>
 </html>
