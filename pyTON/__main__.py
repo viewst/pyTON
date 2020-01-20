@@ -72,7 +72,10 @@ def main():
 
     def json_rpc(method, style='post'):
       def g(func):
-        async def f(pseudo_request):
+        async def f(request):
+          if isinstance(request, web.Request):
+            return await func(request)
+          pseudo_request = request
           response = await func(pseudo_request)
           if pseudo_request._id:
             data = json.loads(response.text)
