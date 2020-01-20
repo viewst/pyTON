@@ -220,9 +220,9 @@ def main():
     async def send_query(request):
       data = await request.json()
       address = detect_address(data['address'])["bounceable"]["b64"]
-      body = codecs.decode(codecs.encode(request.query['body'], "utf-8"), 'base64').replace("\n",'') 
-      code = codecs.decode(codecs.encode(request.query.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
-      data = codecs.decode(codecs.encode(request.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
+      body = codecs.decode(codecs.encode(data['body'], "utf-8"), 'base64').replace("\n",'') 
+      code = codecs.decode(codecs.encode(data.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
+      data = codecs.decode(codecs.encode(data.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
       return await tonlib.raw_create_and_send_query(address, body, init_code=code, init_data=data)
 
     @routes.post('/sendQueryCell')
@@ -248,10 +248,11 @@ def main():
     async def estimate_fee(request):
       data = await request.json()
       address = detect_address(data['address'])["bounceable"]["b64"]
-      body = codecs.decode(codecs.encode(request.query['body'], "utf-8"), 'base64').replace("\n",'') 
-      code = codecs.decode(codecs.encode(request.query.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
-      data = codecs.decode(codecs.encode(request.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
-      return await tonlib.raw_estimate_fees(address, body, init_code=code, init_data=data)
+      body = codecs.decode(codecs.encode(data['body'], "utf-8"), 'base64').replace("\n",'') 
+      code = codecs.decode(codecs.encode(data.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
+      data = codecs.decode(codecs.encode(data.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
+      ignore_chksig = data.get('ignore_chksig', True)
+      return await tonlib.raw_estimate_fees(address, body, init_code=code, init_data=data, ignore_chksig=ignore_chksig)
 
     @routes.post('/estimateFeeCell')
     @json_rpc('estimateFeeCell', 'post')
@@ -266,9 +267,10 @@ def main():
           qcode = deserialize_cell_from_object(data['init_code']).serialize_boc(has_idx=False)
         if 'init_data' in data:
           qdata = deserialize_cell_from_object(data['init_data']).serialize_boc(has_idx=False)
+        ignore_chksig = data.get('ignore_chksig', True)
       except:
         raise web.HTTPBadRequest(text = "Can't serialize cell object")
-      return await tonlib.raw_estimate_fees(address, body, init_code=qcode, init_data=qdata)
+      return await tonlib.raw_estimate_fees(address, body, init_code=qcode, init_data=qdata, ignore_chksig=ignore_chksig)
 
     if args.getmethods:
         @routes.post('/runGetMethod')
