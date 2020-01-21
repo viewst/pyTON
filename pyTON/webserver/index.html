@@ -26,17 +26,17 @@
 
 <p>Default query type is GET if otherwise was not specified. POST query should pass arguments as json objects.</p>
 <p>The response contains a JSON object, which always has a boolean field 'ok' and may have an optional string field 'description' with a human-readable description of the result. If 'ok' equals true, the request was successful and the result of the query can be found in the 'result' field. In case of an unsuccessful request, 'ok' equals false and the error is explained in the 'description'.</p>
-<p>All methods are available through jsonrpc endpoint <span class="server-address">localhost:8000</span>/jsonRPC with `method` equal to method name and params passed as dictionary.</p>
+<p>All methods are available through jsonrpc endpoint <span class="server-address">localhost:8000/</span>jsonRPC with `method` equal to method name and params passed as dictionary.</p>
 <h2> Examples </h2>
 <p><strong>GET-request</strong></p>
-<p class="text-monospace"><span class="server-address">localhost:8000</span>/getAddressInformation?address=0QCyt4ltzak71h6XkyK4ePfZCzJQDSVUNuvZ3VE7hP_Q-GTE</p>
+<p class="text-monospace"><span class="server-address">localhost:8000/</span>getAddressInformation?address=0QCyt4ltzak71h6XkyK4ePfZCzJQDSVUNuvZ3VE7hP_Q-GTE</p>
 <p><strong>POST-request</strong></p>
 <code>
-curl '<span class="server-address"></span>/estimateFeeCell' -H 'content-type: application/json' -d '{"address":"UQBPNn30w7DMPQmcJLPDltSSqu28MzHeV6_CvhjQdDDF64XH","body":{"data":{"b64":"+wnCxYB9Rfe4ooUtCq9hzpjqgSLHM4mdQR2YxENI4FHFAJ2wmz944/DOI/bc/YA2eFBPfmRK8rZnh3unf+1DBQAAAAkDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":552},"refs":[{"data":{"b64":"YgBrvXT8H560LJTGPY0wmQSJB2Lr7IzIIhfS155VEZaobJgknwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":408},"refs":[]}]}}'
+curl '<span class="server-address">localhost:8000/</span>estimateFeeCell' -H 'content-type: application/json' -d '{"address":"UQBPNn30w7DMPQmcJLPDltSSqu28MzHeV6_CvhjQdDDF64XH","body":{"data":{"b64":"+wnCxYB9Rfe4ooUtCq9hzpjqgSLHM4mdQR2YxENI4FHFAJ2wmz944/DOI/bc/YA2eFBPfmRK8rZnh3unf+1DBQAAAAkDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":552},"refs":[{"data":{"b64":"YgBrvXT8H560LJTGPY0wmQSJB2Lr7IzIIhfS155VEZaobJgknwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":408},"refs":[]}]}}'
 </code>
 <p><strong>JsonRPC-request</strong></p>
 <code>
-curl '<span class="server-address"></span>/jsonRPC' -H 'content-type: application/json' -d '{"id":1,"jsonrpc":"2.0","method":"estimateFeeCell","params":{"address":"UQBPNn30w7DMPQmcJLPDltSSqu28MzHeV6_CvhjQdDDF64XH","body":{"data":{"b64":"+wnCxYB9Rfe4ooUtCq9hzpjqgSLHM4mdQR2YxENI4FHFAJ2wmz944/DOI/bc/YA2eFBPfmRK8rZnh3unf+1DBQAAAAkDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":552},"refs":[{"data":{"b64":"YgBrvXT8H560LJTGPY0wmQSJB2Lr7IzIIhfS155VEZaobJgknwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":408},"refs":[]}]}}}'
+curl '<span class="server-address">localhost:8000/</span>jsonRPC' -H 'content-type: application/json' -d '{"id":1,"jsonrpc":"2.0","method":"estimateFeeCell","params":{"address":"UQBPNn30w7DMPQmcJLPDltSSqu28MzHeV6_CvhjQdDDF64XH","body":{"data":{"b64":"+wnCxYB9Rfe4ooUtCq9hzpjqgSLHM4mdQR2YxENI4FHFAJ2wmz944/DOI/bc/YA2eFBPfmRK8rZnh3unf+1DBQAAAAkDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":552},"refs":[{"data":{"b64":"YgBrvXT8H560LJTGPY0wmQSJB2Lr7IzIIhfS155VEZaobJgknwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","len":408},"refs":[]}]}}}'
 </code>
 <ul id="methods">
 </ul>
@@ -227,7 +227,7 @@ curl '<span class="server-address"></span>/jsonRPC' -H 'content-type: applicatio
   </tbody>
 </table>
 
-<h3>sendCell</h3>
+<h3>sendCellSimple</h3>
 <p><strong>POST method</strong></p>
 <p>Use this method to send cell as object: <code>{"data": {"b64": "...", "len": int }, "refs": [...subcells...]}</code>, that is fully packed but not serialized external message.</p>
 <table class="table table-sm">
@@ -275,7 +275,7 @@ curl '<span class="server-address"></span>/jsonRPC' -H 'content-type: applicatio
   </tbody>
 </table>
 
-<h3>sendQueryCell</h3>
+<h3>sendQuerySimple</h3>
 <p><strong>POST method</strong></p>
 <p>Use this method to send query: that is unpacked external message. This method get address, body and init-params(if any), pack it to external message and send to network. Body, init-code and init-data should be passed as objects.</p>
 <table class="table table-sm">
@@ -340,7 +340,7 @@ curl '<span class="server-address"></span>/jsonRPC' -H 'content-type: applicatio
 </table>
 
 
-<h3>estimateFeeCell</h3>
+<h3>estimateFeeSimple</h3>
 <p><strong>POST method</strong></p>
 <p>Use this method to estimate fees required for query processing (unserialized body, init-code and init-data)</p>
 <table class="table table-sm">
@@ -402,10 +402,7 @@ curl '<span class="server-address"></span>/jsonRPC' -H 'content-type: applicatio
 </table>
     <script>
      var address_placeholders = document.getElementsByClassName("server-address");
-     var address = "https://"+window.location.hostname;
-     if(window.location.port!=80) {
-       address += ":"+window.location.port;
-     };
+     var address = window.location.href;
      for ( p of address_placeholders ) {
        p.innerHTML = address;
      };

@@ -211,8 +211,8 @@ def main():
       boc = base64.b64decode(data['boc'])
       return await tonlib.raw_send_message(boc)
 
-    @routes.post('/sendCell')
-    @json_rpc('sendCell', 'post')
+    @routes.post('/sendCellSimple')
+    @json_rpc('sendCellSimple', 'post')
     @wrap_result
     async def send_cell(request):
       data = await request.json()
@@ -234,8 +234,8 @@ def main():
       data = codecs.decode(codecs.encode(data.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
       return await tonlib.raw_create_and_send_query(address, body, init_code=code, init_data=data)
 
-    @routes.post('/sendQueryCell')
-    @json_rpc('sendQueryCell', 'post')
+    @routes.post('/sendQuerySimple')
+    @json_rpc('sendQuerySimple', 'post')
     @wrap_result
     async def send_query_cell(request):
       data = await request.json()
@@ -263,8 +263,8 @@ def main():
       ignore_chksig = data.get('ignore_chksig', True)
       return await tonlib.raw_estimate_fees(address, body, init_code=code, init_data=data, ignore_chksig=ignore_chksig)
 
-    @routes.post('/estimateFeeCell')
-    @json_rpc('estimateFeeCell', 'post')
+    @routes.post('/estimateFeeSimple')
+    @json_rpc('estimateFeeSimple', 'post')
     @wrap_result
     async def estimate_fee_cell(request):
       data = await request.json()
