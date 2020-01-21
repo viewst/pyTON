@@ -52,7 +52,7 @@ def account_forms(raw_form, test_only=False):
   b64_u_us = base64.urlsafe_b64encode(preaddr_u+calcCRC(preaddr_u)).decode('utf8')
   return {'raw_form':raw_form, \
           'bounceable':{'b64':b64_b, 'b64url':b64_b_us}, \
-          'non-bounceable':{'b64':b64_u, 'b64url':b64_u_us},
+          'non_bounceable':{'b64':b64_u, 'b64url':b64_u_us},
           'given_type':'raw_form',
           'test_only': test_only}
 
@@ -97,3 +97,8 @@ def detect_address(unknown_form):
     else:
       return read_friendly_address(unknown_form)
 
+def prepare_address(unknown_form):
+    address = detect_address(unknown_form)
+    if 'non_bounceable' in address['given_type']:
+      return address["non_bounceable"]["b64"]
+    return address["bounceable"]["b64"]

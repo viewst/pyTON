@@ -1,5 +1,5 @@
 from .client import TonlibClient
-from .address_utils import detect_address as _detect_address
+from .address_utils import detect_address as _detect_address, prepare_address as _prepare_address
 from .wallet_utils import wallets as known_wallets, sha256
 import json
 from aiohttp import web
@@ -49,6 +49,12 @@ def main():
     def detect_address(address):
         try:
             return _detect_address(address)
+        except:
+            raise web.HTTPRequestRangeNotSatisfiable()
+
+    def prepare_address(address):
+        try:
+            return _prepare_address(address)
         except:
             raise web.HTTPRequestRangeNotSatisfiable()
 
@@ -114,7 +120,7 @@ def main():
     @json_rpc('getAddressInformation', 'get')
     @wrap_result
     async def getAddressInformation(request):
-      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      address = prepare_address(request.query['address'])
       result = await tonlib.raw_get_account_state(address)
       result["state"] = address_state(result)
       if "balance" in result and int(result["balance"])<0:
@@ -125,7 +131,7 @@ def main():
     @json_rpc('getExtendedAddressInformation', 'get')
     @wrap_result
     async def getExtendedAddressInformation(request):
-      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      address = prepare_address(request.query['address'])
       result = await tonlib.generic_get_account_state(address)
       return result
 
@@ -133,7 +139,7 @@ def main():
     @json_rpc('getWalletInformation', 'get')
     @wrap_result
     async def getWalletInformation(request):
-      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      address = prepare_address(request.query['address'])
       result = await tonlib.raw_get_account_state(address)
       res = {'wallet':False, 'balance': 0, 'account_state':None, 'wallet_type':None, 'seqno':None}
       res["account_state"] = address_state(result)
@@ -152,7 +158,7 @@ def main():
     @json_rpc('getTransactions', 'get')
     @wrap_result
     async def getTransactions(request):
-      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      address = prepare_address(request.query['address'])
       limit = int(request.query.get('limit', 1000))
       lt = request.query.get('lt', None)
       lt = lt if not lt else int(lt)
@@ -165,7 +171,7 @@ def main():
     @json_rpc('getAddressBalance', 'get')
     @wrap_result
     async def getAddressBalance(request):
-      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      address = prepare_address(request.query['address'])
       result = await tonlib.raw_get_account_state(address)
       if "balance" in result and int(result["balance"])<0:
         result["balance"] = 0
@@ -175,7 +181,7 @@ def main():
     @json_rpc('getAddressState', 'get')
     @wrap_result
     async def getAddress(request):
-      address = detect_address(request.query['address'])["bounceable"]["b64"]
+      address = prepare_address(request.query['address'])
       result = await tonlib.raw_get_account_state(address)
       return address_state(result)
 
@@ -183,7 +189,7 @@ def main():
     @json_rpc('packAddress', 'get')
     @wrap_result
     async def packAddress(request):
-      return detect_address(request.query['address'])["bounceable"]["b64"]
+      return prepare_address(request.query['address'])
 
     @routes.get('/unpackAddress')
     @json_rpc('unpackAddress', 'get')
@@ -222,7 +228,7 @@ def main():
     @wrap_result
     async def send_query(request):
       data = await request.json()
-      address = detect_address(data['address'])["bounceable"]["b64"]
+      address = prepare_address(data['address'])
       body = codecs.decode(codecs.encode(data['body'], "utf-8"), 'base64').replace("\n",'') 
       code = codecs.decode(codecs.encode(data.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
       data = codecs.decode(codecs.encode(data.query.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
@@ -233,7 +239,7 @@ def main():
     @wrap_result
     async def send_query_cell(request):
       data = await request.json()
-      address = detect_address(data['address'])["bounceable"]["b64"]
+      address = prepare_address(data['address'])
       try:
         body = deserialize_cell_from_object(data['body']).serialize_boc(has_idx=False)
         qcode, qdata = b'', b''
@@ -250,7 +256,7 @@ def main():
     @wrap_result
     async def estimate_fee(request):
       data = await request.json()
-      address = detect_address(data['address'])["bounceable"]["b64"]
+      address = prepare_address(data['address'])
       body = codecs.decode(codecs.encode(data['body'], "utf-8"), 'base64').replace("\n",'') 
       code = codecs.decode(codecs.encode(data.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
       data = codecs.decode(codecs.encode(data.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
@@ -262,7 +268,7 @@ def main():
     @wrap_result
     async def estimate_fee_cell(request):
       data = await request.json()
-      address = detect_address(data['address'])["bounceable"]["b64"]
+      address = prepare_address(data['address'])
       try:
         body = deserialize_cell_from_object(data['body']).serialize_boc(has_idx=False)
         qcode, qdata = b'', b''
@@ -281,7 +287,7 @@ def main():
         @wrap_result
         async def getAddress(request):
           data = await request.json()
-          address = detect_address(data['address'])["bounceable"]["b64"]
+          address = prepare_address(data['address'])
           method = data['method']
           stack = data['stack']
           return await tonlib.raw_run_method(address, method, stack)

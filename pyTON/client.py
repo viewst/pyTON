@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 import json
 from .tonlibjson import TonWrapper
-from .address_utils import detect_address
+from .address_utils import prepare_address
 from tvm_valuetypes import serialize_tvm_stack, render_tvm_stack
 import functools
 
@@ -147,7 +147,7 @@ class TonlibClient:
                 'previous_transaction_id': internal.transactionId
             }
         """
-        account_address = detect_address(account_address)["bounceable"]["b64"]
+        account_address = prepare_address(account_address)
         from_transaction_hash = h2b64(from_transaction_hash)
 
         data = {
@@ -220,7 +220,7 @@ class TonlibClient:
                 'sync_utime': int
             }
         """
-        account_address = detect_address(address)["bounceable"]["b64"]
+        account_address = prepare_address(address)
 
         data = {
             '@type': 'raw.getAccountState',
@@ -238,7 +238,7 @@ class TonlibClient:
 
     @parallelize
     def generic_get_account_state(self, address: str):
-        account_address = detect_address(address)["bounceable"]["b64"]
+        account_address = prepare_address(address)
         data = {
             '@type': 'generic.getAccountState',
             'account_address': {
@@ -251,7 +251,7 @@ class TonlibClient:
     def _load_contract(self, address):
         if(self._t_local.loaded_contracts_num > 300):
           self.reload_tonlib()
-        account_address = detect_address(address)["bounceable"]["b64"]
+        account_address = prepare_address(address)
         data = {
               '@type': 'smc.load',
                'account_address': {
@@ -335,7 +335,7 @@ class TonlibClient:
       init_code = codecs.decode(codecs.encode(init_code, "base64"), 'utf-8').replace("\n",'')
       init_data = codecs.decode(codecs.encode(init_data, "base64"), 'utf-8').replace("\n",'')
       body = codecs.decode(codecs.encode(body, "base64"), 'utf-8').replace("\n",'')
-      destination = detect_address(destination)["bounceable"]["b64"]
+      destination = prepare_address(destination)
       data = {
         '@type': 'raw.createQuery',
         'body': body,
@@ -374,7 +374,7 @@ class TonlibClient:
       """
       initial_account_state = codecs.decode(codecs.encode(initial_account_state, "base64"), 'utf-8').replace("\n",'')
       body = codecs.decode(codecs.encode(body, "base64"), 'utf-8').replace("\n",'')
-      destination = detect_address(destination)["bounceable"]["b64"]
+      destination = prepare_address(destination)
       data = {
         '@type': 'raw.createAndSendMessage',
         'destination': {
