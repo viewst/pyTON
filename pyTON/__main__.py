@@ -18,6 +18,7 @@ def main():
     port = args.port
     routes = web.RouteTableDef()
     default_config = {
+
         "liteservers": [
           {
             "@type": "liteserver.desc",
@@ -40,6 +41,7 @@ def main():
           }
         }
       }
+
 
     keystore= os.path.expanduser('ton_keystore')
     if not os.path.exists(keystore):
@@ -257,6 +259,8 @@ def main():
     async def estimate_fee(request):
       data = await request.json()
       address = prepare_address(data['address'])
+      addr_info = await tonlib.raw_get_account_state(address)
+      assert address_state(addr_info)=='active'
       body = codecs.decode(codecs.encode(data['body'], "utf-8"), 'base64').replace("\n",'') 
       code = codecs.decode(codecs.encode(data.get('init_code', b''), "utf-8"), 'base64').replace("\n",'') 
       data = codecs.decode(codecs.encode(data.get('init_data', b''), "utf-8"), 'base64').replace("\n",'')
@@ -269,6 +273,8 @@ def main():
     async def estimate_fee_cell(request):
       data = await request.json()
       address = prepare_address(data['address'])
+      addr_info = await tonlib.raw_get_account_state(address)
+      assert address_state(addr_info)=='active'
       try:
         body = deserialize_cell_from_object(data['body']).serialize_boc(has_idx=False)
         qcode, qdata = b'', b''
