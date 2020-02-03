@@ -178,7 +178,10 @@ class TonlibClient:
       """
       if (from_transaction_lt==None) or (from_transaction_hash==None):
         addr = self._raw_get_account_state(account_address)
-        from_transaction_lt, from_transaction_hash = int(addr["last_transaction_id"]["lt"]), b64str_hex(addr["last_transaction_id"]["hash"])
+        try:
+          from_transaction_lt, from_transaction_hash = int(addr["last_transaction_id"]["lt"]), b64str_hex(addr["last_transaction_id"]["hash"])
+        except KeyError:
+          return []
       reach_lt = False
       all_transactions = []
       current_lt, curret_hash = from_transaction_lt, from_transaction_hash
