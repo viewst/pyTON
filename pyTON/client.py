@@ -188,10 +188,12 @@ class TonlibClient:
       while (not reach_lt) and (len(all_transactions)<limit):
         raw_transactions = self._raw_get_transactions(account_address, current_lt, curret_hash)
         if(raw_transactions['@type']) == 'error':
-          if message in raw_transactions['message']:
-            raise Exception(raw_transactions['message'])
-          else:
-            raise Exception("Can't get transactions")
+          break
+          #TODO probably we should chenge get_transactions API
+          #if 'message' in raw_transactions['message']:
+          #  raise Exception(raw_transactions['message'])
+          #else:
+          #  raise Exception("Can't get transactions")
         transactions, next = raw_transactions['transactions'], raw_transactions.get("previous_transaction_id", None)
         for t in transactions:
           tlt = int(t['transaction_id']['lt'])
